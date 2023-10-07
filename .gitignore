@@ -1,0 +1,6 @@
+*.pyc
+.vscode
+
+logs
+worlds/*
+!worlds/Put*
