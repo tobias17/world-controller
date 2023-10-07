@@ -62,12 +62,10 @@ def _start_executor(global_state: GlobalState, execute_type: tk.IntVar, set_amou
                 if progress == -1:
                     global_state.execute_bar['mode'] = 'indeterminate'
                     global_state.execute_bar.start()
-                    info(f"indeterminate: {progress}")
-                else:
+                elif progress >= 0 and progress <= 1:
                     global_state.execute_bar['mode'] = 'determinate'
                     global_state.execute_bar.stop()
                     global_state.execute_bar['value'] = progress * 100
-                    info(f"determinate: {progress}")
 
         thread, event = create_executor(execute_count, global_state.world, generator_name, global_state.module_cache, global_state.node_cache, _on_update)
         if not thread or not event:
@@ -82,6 +80,8 @@ def _start_executor(global_state: GlobalState, execute_type: tk.IntVar, set_amou
                 thread.join()
                 if global_state.execute_label:
                     global_state.execute_label.config(text=f"Finished executing {generator_name}")
+                if global_state.execute_bar:
+                    _on_update(0)
 
         global_state.execute_thread = threading.Thread(target=_thread_wrapper)
         global_state.execute_thread.start()
